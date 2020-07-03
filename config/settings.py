@@ -124,5 +124,5 @@ STATIC_URL = '/static/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # 追加
 MEDIA_URL = '/media/'  # 追加
 LOGIN_URL = 'user_app:login'
-LOGIN_REDIRECT_URL = 'blog_app:index'
-LOGOUT_REDIRECT_URL = 'blog_app:index'
+LOGIN_REDIRECT_URL = 'app:index'
+LOGOUT_REDIRECT_URL = 'app:index'

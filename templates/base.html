@@ -2,47 +2,85 @@
 {% bootstrap_javascript jquery='full' %} #追加
 <!DOCTYPE html>
 <html lang="ja">
- <head>
-   <meta charset="UTF-8">
-   <meta name="description" content=""/>
-   <title>Blog</title>
- </head>
- <body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content=""/>
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/uikit@3.5.3/dist/css/uikit.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.5.3/dist/js/uikit.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.5.3/dist/js/uikit-icons.min.js"></script>
+
+    <title>Blog</title>
+</head>
+<body>
 <!-- ヘッダー 追加 -->
 <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light">
-     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
-       <span class="navbar-toggler-icon"></span>
-     </button>
-     <a class="navbar-brand" href="{% url 'app:index' %}">ブログサイト</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button"
+            data-toggle="collapse" data-target="#navbarTogglerDemo02"
+            aria-controls="navbarTogglerDemo02" aria-expanded="false"
+            aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <a class="navbar-brand" href="{% url 'app:index' %}">ブログサイト</a>
 
-     <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
-       <ul class="navbar-nav mr-auto mt-2 mt-md-0">
-         {% if request.user.is_authenticated %} #注目
-         <li class="nav-item">
-           <a class="nav-link" href="#">{{request.user.username}}</a>
-         </li>
-         <li class="nav-item">
-           <a class="nav-link" href="{% url 'app:add' %}">投稿</a>
-         </li>
-         <li class="nav-item">
-           <a class="nav-link" href="{% url 'user_app:logout' %}">ログアウト</a>
-         </li>
-         {% else %}
-         <li class="nav-item">
-           <a class="nav-link" href="{% url 'user_app:signup' %}">新規登録</a>
-         </li>
+    <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+        <ul class="navbar-nav mr-auto mt-2 mt-md-0">
+            {% if request.user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="#">{{ request.user.username }}</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'app:add' %}">投稿</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link"
+                       href="{% url 'user_app:logout' %}">ログアウト</a>
+                </li>
+            {% else %}
+                <li class="nav-item">
+                    <a class="nav-link"
+                       href="{% url 'user_app:signup' %}">新規登録</a>
+                </li>
 
-         <li class="nav-item">
-           <a class="nav-link" href="{% url 'user_app:login' %}">ログイン</a>
-         </li>
-         {% endif %}
-       </ul>
-     </div>
-   </nav> #省略<!-- ヘッダー 追加 -->
+                <li class="nav-item">
+                    <a class="nav-link"
+                       href="{% url 'user_app:login' %}">ログイン</a>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>
+#省略<!-- ヘッダー 追加 -->
 <!-- コンテナー追加     -->
- <div class="container">
-   {% block content %}
-   {% endblock %}
- </div>
-<!-- コンテナー追加     --> </body>
+<div class="container">
+    {% block content %}
+    {% endblock %}
+</div>
+<!-- コンテナー追加     -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function (event) {
+        $(document).on('click', '#like', function (event) {
+            event.preventDefault();
+            var post_id = $(this).attr('value');
+            $.ajax({
+                type: 'POST',
+                url: '{% url "app:like" %}',
+                data: {
+                    'post_id': post_id,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                dataType: 'json',
+                success: function (response) {
+                    $('#like').html(response['form'])
+                    console.log($('#like').html(response['form']));
+                },
+                error: function (rs, e) {
+                    console.log(rs.responseText);
+                }
+            });
+        });
+    });
+</script>
+</body>
 </html>
